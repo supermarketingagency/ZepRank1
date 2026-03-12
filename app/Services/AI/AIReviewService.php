@@ -16,7 +16,7 @@ class AIReviewService
         // Simplify provider resolution: Use admin-set global provider unless business brings their own
         $providerName = $business->ai_provider ?? config('services.ai.default_provider', 'groq');
         $model = $business->ai_model ?? config('services.ai.default_model', 'llama-3.1-70b-versatile');
-        $apiKey = $business->ai_api_key_encrypted ? decrypt($business->ai_api_key_encrypted) : config('services.ai.api_key');
+        $apiKey = $business->ai_api_key_encrypted ?? config('services.ai.api_key');
 
         $provider = AIProviderFactory::make($providerName, $model, $apiKey ?: '');
 

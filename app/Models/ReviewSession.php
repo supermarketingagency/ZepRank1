@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Scopes\BusinessScope;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +11,7 @@ class ReviewSession extends Model
     use HasFactory;
 
     protected $fillable = [
+        'business_id',
         'branch_id',
         'session_token',
         'touchpoint_type',
@@ -26,8 +28,18 @@ class ReviewSession extends Model
         'user_agent',
     ];
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new BusinessScope());
+    }
+
     public function branch()
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
     }
 }
