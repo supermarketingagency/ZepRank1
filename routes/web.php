@@ -10,6 +10,10 @@ Route::get('/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::c
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
+Route::post('/dashboard/sync-gmb', [\App\Http\Controllers\Dashboard\DashboardController::class, 'syncGmb'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard.sync-gmb');
+
 Route::middleware(['auth', 'role:business_owner'])->group(function () {
     Route::get('/onboarding', [\App\Http\Controllers\Dashboard\OnboardingController::class, 'index'])->name('onboarding');
     Route::post('/onboarding/step1', [\App\Http\Controllers\Dashboard\OnboardingController::class, 'step1'])->name('onboarding.step1');
@@ -50,6 +54,8 @@ Route::middleware('auth')->group(function () {
     // Admin
     Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.dashboard');
+        Route::get('/ai-settings', [\App\Http\Controllers\Admin\AiSettingsController::class, 'index'])->name('admin.ai-settings');
+        Route::post('/ai-settings', [\App\Http\Controllers\Admin\AiSettingsController::class, 'update'])->name('admin.ai-settings.update');
     });
 });
 

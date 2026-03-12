@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use App\Models\ReviewSession;
 use App\Models\PrivateFeedback;
+use App\Jobs\SyncGmbAnalyticsJob;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,5 +39,16 @@ class DashboardController extends Controller
             ->get();
 
         return view('dashboard', compact('business', 'stats', 'recentActivity'));
+    }
+
+    public function syncGmb()
+    {
+        $business = Auth::user()->currentBusiness;
+
+        foreach ($business->branches as $branch) {
+            SyncGmbAnalyticsJob::dispatch($branch);
+        }
+
+        return redirect()->back()->with('success', 'GMB Analytics sync started in background.');
     }
 }

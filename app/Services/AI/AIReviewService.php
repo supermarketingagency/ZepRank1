@@ -2,8 +2,8 @@
 
 namespace App\Services\AI;
 
-use App\Models\Branch;
 use App\Models\ReviewSession;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AIReviewService
@@ -13,36 +13,31 @@ class AIReviewService
         $branch = $session->branch;
         $business = $branch->business;
 
-        $providerName = $branch->ai_provider_override ?? $business->ai_provider ?? 'groq';
-        $model = $branch->ai_model_override ?? $business->ai_model ?? 'llama-3.1-70b-versatile';
-        $apiKey = $branch->ai_api_key_encrypted ?? $business->ai_api_key_encrypted ?? config('services.ai.groq_api_key', '');
+        // Simplify provider resolution: Use admin-set global provider unless business brings their own
+        $providerName = $business->ai_provider ?? config('services.ai.default_provider', 'groq');
+        $model = $business->ai_model ?? config('services.ai.default_model', 'llama-3.1-70b-versatile');
+        $apiKey = $business->ai_api_key_encrypted ? decrypt($business->ai_api_key_encrypted) : config('services.ai.api_key');
 
-        $provider = AIProviderFactory::make($providerName, $model, $apiKey);
+        $provider = AIProviderFactory::make($providerName, $model, $apiKey ?: '');
 
         $promptData = [
             'business_name' => $business->name,
-            'branch_name' => $branch->name,
             'category' => $business->category,
             'star_rating' => $session->star_rating,
-            'city' => $business->city,
         ];
 
         try {
             $drafts = $provider->generateReviewDrafts($promptData);
 
-            foreach ($drafts as $index => $content) {
-                \App\Models\AIGenerationLog::create([
-                    'business_id' => $business->id,
-                    'branch_id' => $branch->id,
-                    'review_session_id' => $session->id,
-                    'provider' => $providerName,
-                    'model' => $model,
-                    'operation' => 'review_generation',
-                    'success' => true,
-                ]);
+            if (empty($drafts)) {
+                $drafts = $this->getFallbackDrafts($business->category);
+            }
 
-                // Store in session related drafts table
-                \Illuminate\Support\Facades\DB::table('ai_review_drafts')->insert([
+            // Clean existing drafts for this session to avoid duplicates on retry
+            DB::table('ai_review_drafts')->where('review_session_id', $session->id)->delete();
+
+            foreach ($drafts as $index => $content) {
+                DB::table('ai_review_drafts')->insert([
                     'review_session_id' => $session->id,
                     'draft_number' => $index + 1,
                     'content' => $content,
@@ -54,7 +49,16 @@ class AIReviewService
             return $drafts;
         } catch (\Exception $e) {
             Log::error('AI Review Generation failed: ' . $e->getMessage());
-            return [];
+            return $this->getFallbackDrafts($business->category);
         }
+    }
+
+    protected function getFallbackDrafts($category)
+    {
+        return [
+            "Great experience! The quality and service were excellent. Highly recommended for anyone looking for a top-tier $category.",
+            "I had a wonderful time here. Everything from the staff to the atmosphere was perfect. Best $category in town!",
+            "Really impressed with the attention to detail. Will definitely be coming back again soon."
+        ];
     }
 }

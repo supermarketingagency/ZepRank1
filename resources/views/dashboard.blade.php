@@ -5,6 +5,13 @@
                 {{ __('Dashboard Overview') }}
             </h1>
             <div class="flex gap-3">
+                <form action="{{ route('dashboard.sync-gmb') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn-pill border border-neutral-300 bg-white hover:bg-neutral-50 text-neutral-700 px-6 py-2.5 text-sm flex items-center gap-2 shadow-sm">
+                        <span class="material-symbols-rounded text-lg">sync</span>
+                        Sync GMB
+                    </button>
+                </form>
                 <a href="{{ route('dashboard.qr') }}" class="btn-pill bg-primary-600 hover:bg-primary-700 text-white px-6 py-2.5 text-sm flex items-center gap-2 shadow-sm">
                     <span class="material-symbols-rounded text-lg">qr_code</span>
                     Generate QR
@@ -14,6 +21,12 @@
     </x-slot>
 
     <div class="space-y-8">
+        @if (session('success'))
+            <div class="p-4 bg-success/10 border-l-4 border-success text-success text-sm font-medium rounded-r-lg">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <!-- KPI Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="card p-6 flex flex-col">

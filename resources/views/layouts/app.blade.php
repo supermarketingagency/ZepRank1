@@ -67,6 +67,18 @@
             <!-- Sidebar (Desktop) -->
             <aside class="w-64 fixed left-0 top-16 bottom-0 border-right border-neutral-200 bg-white hidden lg:block overflow-y-auto pt-4">
                 <nav class="space-y-1">
+                    @if(auth()->user()->primary_role === 'admin')
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-4 px-6 py-3 {{ request()->routeIs('admin.dashboard') ? 'nav-item-active' : 'text-neutral-700 hover:bg-neutral-100' }}">
+                        <span class="material-symbols-rounded">admin_panel_settings</span>
+                        <span class="text-sm font-medium">Platform Admin</span>
+                    </a>
+                    <a href="{{ route('admin.ai-settings') }}" class="flex items-center gap-4 px-6 py-3 {{ request()->routeIs('admin.ai-settings') ? 'nav-item-active' : 'text-neutral-700 hover:bg-neutral-100' }}">
+                        <span class="material-symbols-rounded">smart_toy</span>
+                        <span class="text-sm font-medium">AI Control</span>
+                    </a>
+                    <div class="h-px bg-neutral-200 my-4 mx-4"></div>
+                    @endif
+
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-4 px-6 py-3 {{ request()->routeIs('dashboard') ? 'nav-item-active' : 'text-neutral-700 hover:bg-neutral-100' }}">
                         <span class="material-symbols-rounded">dashboard</span>
                         <span class="text-sm font-medium">Dashboard</span>

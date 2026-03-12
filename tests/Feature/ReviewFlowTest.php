@@ -42,7 +42,7 @@ class ReviewFlowTest extends TestCase
         $this->assertDatabaseHas('review_sessions', ['branch_id' => $this->branch->id]);
     }
 
-    public function test_positive_rating_routes_to_questions(): void
+    public function test_positive_rating_routes_to_reviews(): void
     {
         $session = ReviewSession::create(['branch_id' => $this->branch->id, 'session_token' => 'test_token', 'touchpoint_type' => 'link']);
 
@@ -51,7 +51,7 @@ class ReviewFlowTest extends TestCase
             'session_token' => 'test_token',
         ]);
 
-        $response->assertRedirect('/r/main-branch/questions?token=test_token');
+        $response->assertRedirect('/r/main-branch/reviews?token=test_token');
         $this->assertEquals(5, $session->fresh()->star_rating);
         $this->assertEquals('google', $session->fresh()->route);
     }

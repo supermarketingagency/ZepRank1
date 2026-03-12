@@ -22,11 +22,15 @@ class Branch extends Model
         'ai_provider_override',
         'ai_model_override',
         'ai_api_key_encrypted',
+        'google_review_count',
+        'google_rating',
+        'last_google_sync',
     ];
 
     protected $casts = [
         'review_link_active' => 'boolean',
         'ai_api_key_encrypted' => 'encrypted',
+        'last_google_sync' => 'datetime',
     ];
 
     protected static function booted(): void
@@ -42,10 +46,5 @@ class Branch extends Model
     public function reviewSessions()
     {
         return $this->hasMany(ReviewSession::class);
-    }
-
-    public function qrCode()
-    {
-        return $this->hasOne(QrCode::class);
     }
 }
