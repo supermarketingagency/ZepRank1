@@ -29,11 +29,10 @@ return new class extends Migration
             }
         });
 
-        // Populate business_id from related tables
-        // ReviewSession belongs to Branch, which belongs to Business
-        DB::statement("UPDATE review_sessions rs JOIN branches b ON rs.branch_id = b.id SET rs.business_id = b.business_id");
-        DB::statement("UPDATE private_feedbacks pf JOIN branches b ON pf.branch_id = b.id SET pf.business_id = b.business_id");
-        DB::statement("UPDATE ai_review_drafts ard JOIN review_sessions rs ON ard.review_session_id = rs.id SET ard.business_id = rs.business_id");
+        // Populate business_id from related tables using subqueries for cross-database compatibility (MySQL/SQLite)
+        DB::statement("UPDATE review_sessions SET business_id = (SELECT business_id FROM branches WHERE branches.id = review_sessions.branch_id)");
+        DB::statement("UPDATE private_feedbacks SET business_id = (SELECT business_id FROM branches WHERE branches.id = private_feedbacks.branch_id)");
+        DB::statement("UPDATE ai_review_drafts SET business_id = (SELECT business_id FROM review_sessions WHERE review_sessions.id = ai_review_drafts.review_session_id)");
     }
 
     /**

@@ -12,7 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('branches', function (Blueprint $table) {
-            //
+            if (!Schema::hasColumn('branches', 'target_keywords')) {
+                $table->text('target_keywords')->nullable();
+            }
+            if (!Schema::hasColumn('branches', 'business_description')) {
+                $table->text('business_description')->nullable();
+            }
         });
     }
 
@@ -22,7 +27,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('branches', function (Blueprint $table) {
-            //
+            $table->dropColumn(['target_keywords', 'business_description']);
         });
     }
 };

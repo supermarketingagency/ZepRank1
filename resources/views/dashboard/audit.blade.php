@@ -1,43 +1,66 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('GMB Profile Audit') }}
-        </h2>
+        <div class="flex justify-between items-center animate-fade-in">
+            <div>
+                <h1 class="text-2xl font-google text-neutral-900 dark:text-neutral-50">
+                    {{ __('GMB Health Audit') }}
+                </h1>
+                <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">AI-driven analysis of your Google Business Profile optimization status.</p>
+            </div>
+            <div class="flex gap-3">
+                <button class="btn-pill border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-dark-surface hover:bg-neutral-50 dark:hover:bg-neutral-800 text-neutral-700 dark:text-neutral-300 px-6 py-2.5 text-sm flex items-center gap-2 shadow-sm">
+                    <span class="material-symbols-rounded text-lg">sync</span>
+                    Re-Audit Now
+                </button>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-8 animate-slide-up">
+        <div class="max-w-7xl mx-auto space-y-10">
             <!-- Audit Overview -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
-                <div class="p-6 text-gray-900">
-                    <div class="flex flex-col md:flex-row items-center gap-8">
-                        <div class="relative w-32 h-32">
-                            <svg class="w-full h-full" viewBox="0 0 36 36">
-                                <path class="text-gray-100" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <path class="text-green-500" stroke-width="3" stroke-dasharray="{{ $auditData['score'] }}, 100" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-                                <text x="18" y="20.35" class="text-2xl font-bold" text-anchor="middle" fill="#374151">{{ $auditData['score'] }}</text>
+            <div class="card overflow-hidden bg-white dark:bg-dark-surface border-neutral-200 dark:border-neutral-800 transition-all hover:shadow-m3-2">
+                <div class="p-10">
+                    <div class="flex flex-col md:flex-row items-center gap-12">
+                        <div class="relative w-40 h-40">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-neutral-100 dark:text-neutral-800" stroke-width="2"></circle>
+                                <circle cx="18" cy="18" r="16" fill="none" class="stroke-current text-success-500" stroke-width="2" stroke-dasharray="100" stroke-dashoffset="{{ 100 - $auditData['score'] }}" stroke-linecap="round"></circle>
                             </svg>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                <span class="text-4xl font-google font-bold dark:text-neutral-50">{{ $auditData['score'] }}</span>
+                                <span class="text-[9px] font-black uppercase tracking-widest text-neutral-400">Score</span>
+                            </div>
                         </div>
-                        <div class="flex-grow">
-                            <h3 class="text-2xl font-bold">Optimization Score</h3>
-                            <p class="text-gray-500">Your profile for <span class="font-bold text-gray-800">{{ $branch->name }}</span> is doing well, but there is room for growth.</p>
+                        <div class="flex-grow text-center md:text-left space-y-2">
+                            <h3 class="text-3xl font-google font-bold dark:text-neutral-50">Profile Optimization</h3>
+                            <p class="text-neutral-500 dark:text-neutral-400 text-sm leading-relaxed max-w-xl">Your profile for <span class="font-bold text-neutral-800 dark:text-neutral-200">{{ $branch->name }}</span> is in the <span class="text-success-500 font-bold uppercase tracking-widest text-xs">top 15%</span> of local businesses. Fix the issues below to hit 100.</p>
                         </div>
-                        <button class="bg-blue-600 text-white px-6 py-2 rounded-full font-bold">Sync & Re-Audit</button>
+                        <div class="flex flex-col gap-3">
+                            <div class="px-4 py-2 bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 flex items-center gap-3">
+                                <span class="material-symbols-rounded text-success-500 text-lg">verified</span>
+                                <span class="text-xs font-bold text-neutral-600 dark:text-neutral-400">Verified Profile</span>
+                            </div>
+                            <div class="px-4 py-2 bg-neutral-50 dark:bg-neutral-900 rounded-xl border border-neutral-100 dark:border-neutral-800 flex items-center gap-3">
+                                <span class="material-symbols-rounded text-primary-500 text-lg">schedule</span>
+                                <span class="text-xs font-bold text-neutral-600 dark:text-neutral-400">Synced 2h ago</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Critical Issues -->
-                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                    <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
-                        <span class="material-symbols-rounded text-red-500">warning</span>
+                <div class="card p-6 bg-white dark:bg-dark-surface border-neutral-200 dark:border-neutral-800">
+                    <h4 class="font-bold text-lg mb-4 flex items-center gap-2 dark:text-neutral-50">
+                        <span class="material-symbols-rounded text-danger-400">warning</span>
                         Critical Issues
                     </h4>
                     <ul class="space-y-3">
                         @foreach($auditData['critical_issues'] as $issue)
-                        <li class="flex gap-3 text-sm text-gray-600">
-                            <span class="w-1.5 h-1.5 bg-red-500 rounded-full mt-1.5 flex-shrink-0"></span>
+                        <li class="flex gap-3 text-sm text-neutral-600 dark:text-neutral-400">
+                            <span class="w-1.5 h-1.5 bg-danger-400 rounded-full mt-1.5 flex-shrink-0"></span>
                             {{ $issue }}
                         </li>
                         @endforeach
@@ -45,41 +68,41 @@
                 </div>
 
                 <!-- AI Keyword Gap -->
-                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                    <h4 class="font-bold text-lg mb-4 flex items-center gap-2">
-                        <span class="material-symbols-rounded text-blue-500">lightbulb</span>
+                <div class="card p-6 bg-white dark:bg-dark-surface border-neutral-200 dark:border-neutral-800">
+                    <h4 class="font-bold text-lg mb-4 flex items-center gap-2 dark:text-neutral-50">
+                        <span class="material-symbols-rounded text-primary-500">lightbulb</span>
                         AI Local SEO Insights
                     </h4>
-                    <p class="text-sm text-gray-600 italic border-l-4 border-blue-100 pl-4">
+                    <p class="text-sm text-neutral-600 dark:text-neutral-400 italic border-l-4 border-primary-100 dark:border-primary-900/50 pl-4">
                         {{ $auditData['keyword_gap'][0] }}
                     </p>
                 </div>
             </div>
 
             <!-- Optimization Suggestions -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
-                <div class="p-6 text-gray-900">
-                    <h3 class="font-bold text-lg mb-6">AI Optimization Recommendations</h3>
+            <div class="card overflow-hidden bg-white dark:bg-dark-surface border-neutral-200 dark:border-neutral-800">
+                <div class="p-6">
+                    <h3 class="font-google font-bold text-lg mb-6 dark:text-neutral-50">AI Optimization Recommendations</h3>
 
                     <div class="space-y-6">
-                        <div class="p-4 bg-gray-50 rounded-xl">
-                            <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Optimized Business Description</label>
-                            <p class="text-sm text-gray-700 leading-relaxed">{{ $auditData['optimization_suggestions']['description'] }}</p>
-                            <button class="mt-3 text-blue-600 text-xs font-bold flex items-center gap-1">
+                        <div class="p-5 bg-neutral-50 dark:bg-neutral-900/50 rounded-2xl border border-neutral-100 dark:border-neutral-800">
+                            <label class="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-3">Optimized Business Description</label>
+                            <p class="text-sm text-neutral-700 dark:text-neutral-300 leading-relaxed">{{ $auditData['optimization_suggestions']['description'] }}</p>
+                            <button class="mt-4 text-primary-600 dark:text-primary-400 text-xs font-bold flex items-center gap-2 hover:underline">
                                 <span class="material-symbols-rounded text-sm">content_copy</span> Copy to Clipboard
                             </button>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div class="p-4 bg-gray-50 rounded-xl">
-                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Suggested Categories</label>
-                                <p class="text-sm text-gray-700 font-medium">{{ $auditData['optimization_suggestions']['category'] }}</p>
+                            <div class="p-5 bg-neutral-50 dark:bg-neutral-900/50 rounded-2xl border border-neutral-100 dark:border-neutral-800">
+                                <label class="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-3">Suggested Categories</label>
+                                <p class="text-sm text-neutral-700 dark:text-neutral-300 font-medium">{{ $auditData['optimization_suggestions']['category'] }}</p>
                             </div>
-                            <div class="p-4 bg-gray-50 rounded-xl">
-                                <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Keywords to Add to Profile</label>
+                            <div class="p-5 bg-neutral-50 dark:bg-neutral-900/50 rounded-2xl border border-neutral-100 dark:border-neutral-800">
+                                <label class="block text-[10px] font-bold text-neutral-400 uppercase tracking-widest mb-3">Keywords to Add to Profile</label>
                                 <div class="flex flex-wrap gap-2">
                                     @foreach(explode(',', $auditData['optimization_suggestions']['keywords_to_add']) as $kw)
-                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-md font-medium">{{ trim($kw) }}</span>
+                                    <span class="px-2.5 py-1 bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 text-[10px] rounded-md font-bold uppercase">{{ trim($kw) }}</span>
                                     @endforeach
                                 </div>
                             </div>

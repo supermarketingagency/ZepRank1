@@ -15,57 +15,129 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
                         primary: {
                             50: '#E8F0FE',
                             100: '#D2E3FC',
+                            200: '#AECBFA',
+                            300: '#82ABFA',
+                            400: '#5B8DEF',
                             500: '#4285F4',
                             600: '#1A73E8',
-                            700: '#1557B0'
+                            700: '#1557B0',
+                            800: '#0D47A1',
+                            900: '#083594'
                         },
-                        success: '#34A853',
-                        warning: '#FBBC04',
-                        danger: '#EA4335',
+                        success: {
+                            50: '#E6F4EA',
+                            400: '#34A853',
+                            500: '#1E8E3E',
+                        },
+                        warning: {
+                            400: '#FBBC04',
+                            500: '#F9AB00',
+                        },
+                        danger: {
+                            400: '#EA4335',
+                            500: '#D93025',
+                        },
                         neutral: {
                             50: '#F8F9FA',
                             100: '#F1F3F4',
                             200: '#E8EAED',
                             300: '#DADCE0',
+                            400: '#BDC1C6',
+                            500: '#9AA0A6',
+                            600: '#80868B',
                             700: '#5F6368',
+                            800: '#3C4043',
                             900: '#202124'
+                        },
+                        dark: {
+                            surface: '#1C1C1E',
+                            card: '#2C2C2E',
+                            background: '#111111'
                         }
                     },
                     fontFamily: {
-                        google: ['"Google Sans"', 'sans-serif'],
+                        google: ['"Google Sans"', '"Product Sans"', 'sans-serif'],
                         body: ['Roboto', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'm3-1': '0 1px 2px 0 rgba(60,64,67,0.30), 0 1px 3px 1px rgba(60,64,67,0.15)',
+                        'm3-2': '0 1px 2px 0 rgba(60,64,67,0.30), 0 2px 6px 2px rgba(60,64,67,0.15)',
+                        'm3-3': '0 1px 2px 0 rgba(60,64,67,0.30), 0 4px 8px 3px rgba(60,64,67,0.15)',
                     }
                 }
             }
         }
     </script>
     <style>
-        :root {
-            --elevation-1: 0 1px 2px 0 rgba(60,64,67,0.30), 0 1px 3px 1px rgba(60,64,67,0.15);
-            --elevation-2: 0 1px 2px 0 rgba(60,64,67,0.30), 0 2px 6px 2px rgba(60,64,67,0.15);
-        }
-        body { font-family: 'Roboto', sans-serif; background-color: #F8F9FA; color: #202124; }
+        [x-cloak] { display: none !important; }
+        body { font-family: 'Roboto', sans-serif; transition: background-color 300ms ease, color 300ms ease; }
         h1, h2, h3, h4, .font-google { font-family: 'Google Sans', sans-serif; }
-        .card { background: white; border-radius: 12px; border: 1px solid #E8EAED; box-shadow: var(--elevation-1); transition: box-shadow 200ms; }
-        .card:hover { box-shadow: var(--elevation-2); }
-        .btn-pill { border-radius: 9999px; font-weight: 500; letter-spacing: 0.1px; transition: all 200ms; }
-        .nav-item-active { background-color: #E8F0FE; color: #1A73E8; border-radius: 0 9999px 9999px 0; margin-right: 12px; position: relative; }
-        .nav-item-active::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 24px; background: #1A73E8; border-radius: 0 2px 2px 0; }
+
+        .card { transition: box-shadow 200ms ease, transform 200ms ease; }
+        .card:hover { transform: translateY(-1px); }
+
+        .nav-item-active {
+            background-color: #E8F0FE;
+            color: #1A73E8;
+            border-radius: 0 9999px 9999px 0;
+            margin-right: 12px;
+            position: relative;
+        }
+        .dark .nav-item-active {
+            background-color: rgba(66, 133, 244, 0.15);
+            color: #8AB4F8;
+        }
+        .nav-item-active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 24px;
+            background: #1A73E8;
+            border-radius: 0 2px 2px 0;
+        }
+        .dark .nav-item-active::before { background: #8AB4F8; }
+
+        /* Animation Keyframes */
+        @keyframes slide-up {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up { animation: slide-up 400ms cubic-bezier(0.4, 0, 0.2, 1); }
+
+        @keyframes fade-in {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-fade-in { animation: fade-in 300ms ease-in; }
+
+        /* Star Rating Colors */
+        .star-1 { color: #EA4335; }
+        .star-2 { color: #FF7043; }
+        .star-3 { color: #FBBC04; }
+        .star-4 { color: #34A853; }
+        .star-5 { color: #1E8E3E; }
     </style>
 </head>
-<body class="antialiased">
+<body class="antialiased bg-neutral-50 dark:bg-dark-background text-neutral-900 dark:text-neutral-50"
+      x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }"
+      :class="{ 'dark': darkMode }"
+      x-init="$watch('darkMode', val => localStorage.setItem('darkMode', val))">
     <div class="min-h-screen flex flex-col">
         @include('layouts.navigation')
 
         <div class="flex flex-1 pt-16">
             <!-- Sidebar (Desktop) -->
-            <aside class="w-64 fixed left-0 top-16 bottom-0 border-right border-neutral-200 bg-white hidden lg:block overflow-y-auto pt-4">
+            <aside class="w-64 fixed left-0 top-16 bottom-0 border-r border-neutral-200 dark:border-neutral-800 bg-white dark:bg-dark-surface hidden lg:block overflow-y-auto pt-4 transition-colors duration-300">
                 <nav class="space-y-1">
                     @if(auth()->user()->primary_role === 'admin')
                     <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-4 px-6 py-3 {{ request()->routeIs('admin.dashboard') ? 'nav-item-active' : 'text-neutral-700 hover:bg-neutral-100' }}">
@@ -132,7 +204,7 @@
             </aside>
 
             <!-- Main Content -->
-            <main class="flex-1 lg:ml-64 p-8">
+            <main class="flex-1 lg:ml-64 p-8 animate-fade-in">
                 @isset($header)
                     <div class="mb-8">
                         {{ $header }}
@@ -143,5 +215,7 @@
             </main>
         </div>
     </div>
+
+    @stack('scripts')
 </body>
 </html>

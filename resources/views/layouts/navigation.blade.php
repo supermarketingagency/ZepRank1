@@ -1,10 +1,10 @@
 <nav x-data="{ open: false }" class="bg-white border-b border-neutral-200 fixed top-0 left-0 right-0 z-50 h-16">
     <!-- Primary Navigation Menu -->
-    <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-full">
+    <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 h-full dark:bg-dark-surface transition-colors duration-300">
         <div class="flex justify-between h-full">
             <div class="flex items-center gap-4">
                 <!-- Hamburger -->
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-full text-neutral-500 hover:bg-neutral-100 focus:outline-none transition duration-150 ease-in-out">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-full text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none transition">
                     <span class="material-symbols-rounded">menu</span>
                 </button>
 
@@ -12,17 +12,23 @@
                 <div class="shrink-0 flex items-center gap-2">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2">
                         <x-application-logo class="block h-8 w-auto fill-current text-primary-600" />
-                        <span class="text-xl font-google text-neutral-700 tracking-tight">ZEPRANK</span>
+                        <span class="text-xl font-google text-neutral-700 dark:text-neutral-200 tracking-tight">ZEPRANK</span>
                     </a>
                 </div>
             </div>
 
             <!-- Right side -->
             <div class="hidden sm:flex sm:items-center sm:ms-6 gap-2">
-                <button class="p-2 text-neutral-500 hover:bg-neutral-100 rounded-full transition">
+                <!-- Dark Mode Toggle -->
+                <button @click="darkMode = !darkMode" class="p-2 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition" title="Toggle Dark Mode">
+                    <span class="material-symbols-rounded" x-show="!darkMode">dark_mode</span>
+                    <span class="material-symbols-rounded" x-show="darkMode">light_mode</span>
+                </button>
+
+                <button class="p-2 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition">
                     <span class="material-symbols-rounded">help</span>
                 </button>
-                <button class="p-2 text-neutral-500 hover:bg-neutral-100 rounded-full transition">
+                <button class="p-2 text-neutral-500 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-full transition">
                     <span class="material-symbols-rounded">notifications</span>
                 </button>
 

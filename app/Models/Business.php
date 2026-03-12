@@ -50,4 +50,9 @@ class Business extends Model
     {
         return $this->hasOne(Subscription::class);
     }
+
+    public function googleProfileConnection()
+    {
+        return $this->hasOne(GoogleProfileConnection::class);
+    }
 }

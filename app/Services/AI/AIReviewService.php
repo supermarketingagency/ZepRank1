@@ -3,7 +3,7 @@
 namespace App\Services\AI;
 
 use App\Models\ReviewSession;
-use Illuminate\Support\Facades\DB;
+use App\Models\AIReviewDraft;
 use Illuminate\Support\Facades\Log;
 
 class AIReviewService
@@ -34,15 +34,14 @@ class AIReviewService
             }
 
             // Clean existing drafts for this session to avoid duplicates on retry
-            DB::table('ai_review_drafts')->where('review_session_id', $session->id)->delete();
+            AIReviewDraft::where('review_session_id', $session->id)->delete();
 
             foreach ($drafts as $index => $content) {
-                DB::table('ai_review_drafts')->insert([
+                AIReviewDraft::create([
                     'review_session_id' => $session->id,
+                    'business_id' => $session->business_id,
                     'draft_number' => $index + 1,
                     'content' => $content,
-                    'created_at' => now(),
-                    'updated_at' => now(),
                 ]);
             }
 
