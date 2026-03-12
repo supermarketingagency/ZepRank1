@@ -29,6 +29,19 @@ Route::middleware(['auth', 'role:business_owner'])->group(function () {
     Route::get('/feedback', [\App\Http\Controllers\Dashboard\FeedbackController::class, 'index'])->name('dashboard.feedback');
     Route::get('/analytics', [\App\Http\Controllers\Dashboard\AnalyticsController::class, 'index'])->name('dashboard.analytics');
     Route::get('/widgets', [\App\Http\Controllers\Dashboard\WidgetController::class, 'index'])->name('dashboard.widgets');
+
+    // Google Reviews Management
+    Route::get('/reviews/manage', [\App\Http\Controllers\Dashboard\ReviewsController::class, 'index'])->name('dashboard.reviews.manage');
+    Route::get('/reviews/{review}/suggest', [\App\Http\Controllers\Dashboard\ReviewsController::class, 'generateSuggestion'])->name('dashboard.reviews.suggest');
+
+    // Competitor Analysis
+    Route::get('/competitors', [\App\Http\Controllers\Dashboard\CompetitorController::class, 'index'])->name('dashboard.competitors');
+
+    // GMB Audit
+    Route::get('/audit', [\App\Http\Controllers\Dashboard\AuditController::class, 'index'])->name('dashboard.audit');
+
+    // Marketing & Ads
+    Route::get('/marketing', [\App\Http\Controllers\Dashboard\MarketingController::class, 'index'])->name('dashboard.marketing');
 });
 
 Route::middleware('auth')->group(function () {

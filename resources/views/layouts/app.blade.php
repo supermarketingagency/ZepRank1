@@ -84,8 +84,12 @@
                         <span class="text-sm font-medium">Dashboard</span>
                     </a>
                     <a href="{{ route('dashboard.reviews') }}" class="flex items-center gap-4 px-6 py-3 {{ request()->routeIs('dashboard.reviews') ? 'nav-item-active' : 'text-neutral-700 hover:bg-neutral-100' }}">
-                        <span class="material-symbols-rounded">star</span>
-                        <span class="text-sm font-medium">Reviews</span>
+                        <span class="material-symbols-rounded">history</span>
+                        <span class="text-sm font-medium">Review Log</span>
+                    </a>
+                    <a href="{{ route('dashboard.reviews.manage') }}" class="flex items-center gap-4 px-6 py-3 {{ request()->routeIs('dashboard.reviews.manage') ? 'nav-item-active' : 'text-neutral-700 hover:bg-neutral-100' }}">
+                        <span class="material-symbols-rounded">rate_review</span>
+                        <span class="text-sm font-medium">Manage Reviews</span>
                     </a>
                     <a href="{{ route('dashboard.feedback') }}" class="flex items-center gap-4 px-6 py-3 {{ request()->routeIs('dashboard.feedback') ? 'nav-item-active' : 'text-neutral-700 hover:bg-neutral-100' }}">
                         <span class="material-symbols-rounded">feedback</span>
@@ -95,6 +99,22 @@
                         <span class="material-symbols-rounded">qr_code</span>
                         <span class="text-sm font-medium">QR & Links</span>
                     </a>
+                    <div class="h-px bg-neutral-200 my-4 mx-4"></div>
+
+                    <div class="px-6 py-2 text-xs font-bold text-neutral-400 uppercase tracking-widest">Growth Tools</div>
+                    <a href="{{ route('dashboard.competitors') }}" class="flex items-center gap-4 px-6 py-3 {{ request()->routeIs('dashboard.competitors') ? 'nav-item-active' : 'text-neutral-700 hover:bg-neutral-100' }}">
+                        <span class="material-symbols-rounded">monitoring</span>
+                        <span class="text-sm font-medium">Competitors</span>
+                    </a>
+                    <a href="{{ route('dashboard.audit') }}" class="flex items-center gap-4 px-6 py-3 {{ request()->routeIs('dashboard.audit') ? 'nav-item-active' : 'text-neutral-700 hover:bg-neutral-100' }}">
+                        <span class="material-symbols-rounded">fact_check</span>
+                        <span class="text-sm font-medium">GMB Audit</span>
+                    </a>
+                    <a href="{{ route('dashboard.marketing') }}" class="flex items-center gap-4 px-6 py-3 {{ request()->routeIs('dashboard.marketing') ? 'nav-item-active' : 'text-neutral-700 hover:bg-neutral-100' }}">
+                        <span class="material-symbols-rounded">campaign</span>
+                        <span class="text-sm font-medium">Marketing & Ads</span>
+                    </a>
+
                     <div class="h-px bg-neutral-200 my-4 mx-4"></div>
                     <a href="{{ route('dashboard.business') }}" class="flex items-center gap-4 px-6 py-3 {{ request()->routeIs('dashboard.business') ? 'nav-item-active' : 'text-neutral-700 hover:bg-neutral-100' }}">
                         <span class="material-symbols-rounded">business</span>
