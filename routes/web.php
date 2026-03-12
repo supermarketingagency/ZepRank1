@@ -41,7 +41,16 @@ Route::middleware(['auth', 'role:business_owner'])->group(function () {
     Route::get('/audit', [\App\Http\Controllers\Dashboard\AuditController::class, 'index'])->name('dashboard.audit');
 
     // Marketing & Ads
-    Route::get('/marketing', [\App\Http\Controllers\Dashboard\MarketingController::class, 'index'])->name('dashboard.marketing');
+    Route::get('/marketing', [\App\Http\Controllers\Dashboard\MarketingHubController::class, 'index'])->name('dashboard.marketing');
+    Route::post('/marketing/ads', [\App\Http\Controllers\Dashboard\MarketingHubController::class, 'launchAds'])->name('dashboard.marketing.ads');
+
+    // Creative Hub (Auto-Poster)
+    Route::get('/creative-hub', [\App\Http\Controllers\Dashboard\CreativeHubController::class, 'index'])->name('dashboard.creative');
+    Route::post('/creative-hub/generate/{festival}', [\App\Http\Controllers\Dashboard\CreativeHubController::class, 'generate'])->name('dashboard.creative.generate');
+
+    // Social Scheduler
+    Route::get('/scheduler', [\App\Http\Controllers\Dashboard\SocialSchedulerController::class, 'index'])->name('dashboard.scheduler');
+    Route::post('/scheduler/post/{poster}', [\App\Http\Controllers\Dashboard\SocialSchedulerController::class, 'postNow'])->name('dashboard.scheduler.post');
 });
 
 Route::middleware('auth')->group(function () {
@@ -81,6 +90,12 @@ Route::prefix('r')->group(function () {
     Route::get('/{slug}/reviews', [\App\Http\Controllers\ReviewFlow\ReviewFlowController::class, 'showDrafts'])->name('review.drafts');
     Route::get('/{slug}/redirect', [\App\Http\Controllers\ReviewFlow\ReviewFlowController::class, 'googleRedirect'])->name('review.redirect');
     Route::get('/{slug}/feedback', [\App\Http\Controllers\ReviewFlow\ReviewFlowController::class, 'showPrivateFeedback'])->name('review.feedback');
+});
+
+// GMB OAuth Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/auth/google/redirect', [\App\Http\Controllers\Auth\GmbAuthController::class, 'redirectToGoogle'])->name('auth.google.redirect');
+    Route::get('/auth/google/callback', [\App\Http\Controllers\Auth\GmbAuthController::class, 'handleCallback'])->name('auth.google.callback');
 });
 
 require __DIR__.'/auth.php';

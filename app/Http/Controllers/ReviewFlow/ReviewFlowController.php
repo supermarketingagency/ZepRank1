@@ -34,9 +34,14 @@ class ReviewFlowController extends Controller
         $branch = Branch::where('slug', $slug)->firstOrFail();
         $session = ReviewSession::where('session_token', $request->session_token)->firstOrFail();
 
+        $route = 'google';
+        if ($branch->review_filter_enabled) {
+            $route = $request->rating >= $branch->negative_review_threshold ? 'google' : 'private_feedback';
+        }
+
         $session->update([
             'star_rating' => $request->rating,
-            'route' => $request->rating >= $branch->negative_review_threshold ? 'google' : 'private_feedback',
+            'route' => $route,
         ]);
 
         // Simple Routing: Go straight to drafts/feedback
