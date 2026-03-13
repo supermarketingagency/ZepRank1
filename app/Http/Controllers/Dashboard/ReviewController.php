@@ -15,7 +15,7 @@ class ReviewController extends Controller
         $business = Auth::user()->currentBusiness;
         $reviews = ReviewSession::whereIn('branch_id', $business->branches->pluck('id'))
             ->whereNotNull('star_rating')
-            ->with('branch')
+            ->with(['branch', 'business'])
             ->latest()
             ->paginate(20);
 
