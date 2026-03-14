@@ -21,6 +21,10 @@ return new class extends Migration
             $table->enum('status', ['generated', 'scheduled', 'posted', 'failed'])->default('generated');
             $table->timestamp('scheduled_at')->nullable();
             $table->timestamps();
+
+            $table->index('status');
+            $table->index('scheduled_at');
+            $table->index('business_id');
         });
     }
 

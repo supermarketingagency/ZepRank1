@@ -6,6 +6,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Installation Wizard
+Route::prefix('install')->group(function () {
+    Route::get('/', [\App\Http\Controllers\InstallController::class, 'index'])->name('install.index');
+    Route::post('/database', [\App\Http\Controllers\InstallController::class, 'setupDatabase'])->name('install.database');
+    Route::post('/database/test', [\App\Http\Controllers\InstallController::class, 'testConnection'])->name('install.database.test');
+    Route::post('/app', [\App\Http\Controllers\InstallController::class, 'setupApp'])->name('install.app');
+    Route::post('/finalize', [\App\Http\Controllers\InstallController::class, 'finalize'])->name('install.finalize');
+});
+
 Route::get('/dashboard', [\App\Http\Controllers\Dashboard\DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -24,6 +33,9 @@ Route::middleware(['auth', 'role:business_owner'])->group(function () {
 
     // Dashboard Sub-modules
     Route::get('/business', [\App\Http\Controllers\Dashboard\BusinessController::class, 'index'])->name('dashboard.business');
+    Route::post('/business/manual-sync', [\App\Http\Controllers\Dashboard\BusinessController::class, 'manualSync'])->name('dashboard.business.manual-sync');
+    Route::post('/business/branches', [\App\Http\Controllers\Dashboard\BusinessController::class, 'storeBranch'])->name('dashboard.business.branches.store');
+    Route::put('/business/branches/{branch}', [\App\Http\Controllers\Dashboard\BusinessController::class, 'updateBranch'])->name('dashboard.business.branches.update');
     Route::get('/qr', [\App\Http\Controllers\Dashboard\QrController::class, 'index'])->name('dashboard.qr');
     Route::get('/reviews', [\App\Http\Controllers\Dashboard\ReviewController::class, 'index'])->name('dashboard.reviews');
     Route::get('/feedback', [\App\Http\Controllers\Dashboard\FeedbackController::class, 'index'])->name('dashboard.feedback');
@@ -76,8 +88,16 @@ Route::middleware('auth')->group(function () {
     // Admin
     Route::middleware('role:admin')->prefix('admin')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\AdminController::class, 'index'])->name('admin.dashboard');
+
+        // AI Settings
         Route::get('/ai-settings', [\App\Http\Controllers\Admin\AiSettingsController::class, 'index'])->name('admin.ai-settings');
         Route::post('/ai-settings', [\App\Http\Controllers\Admin\AiSettingsController::class, 'update'])->name('admin.ai-settings.update');
+        Route::post('/ai-settings/test', [\App\Http\Controllers\Admin\AiSettingsController::class, 'testConnection'])->name('admin.ai-settings.test');
+
+        // Business Management
+        Route::get('/businesses', [\App\Http\Controllers\Admin\BusinessManagementController::class, 'index'])->name('admin.businesses.index');
+        Route::get('/businesses/{business}', [\App\Http\Controllers\Admin\BusinessManagementController::class, 'show'])->name('admin.businesses.show');
+        Route::patch('/businesses/{business}/status', [\App\Http\Controllers\Admin\BusinessManagementController::class, 'updateStatus'])->name('admin.businesses.status');
     });
 });
 

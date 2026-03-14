@@ -51,9 +51,26 @@
                 </div>
             </div>
 
-            <div class="flex justify-end">
-                <x-primary-button class="btn-pill px-8">
-                    {{ __('Save All Settings') }}
+            <div class="flex justify-between items-center">
+                <div x-data="{ testing: false, result: null }">
+                    <button type="button"
+                            @click="testing = true; fetch('{{ route('admin.ai-settings.test') }}', {method: 'POST', headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'}})
+                                .then(r => r.json())
+                                .then(d => { result = d; testing = false; })"
+                            class="bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 px-6 py-2.5 rounded-full text-xs font-bold transition active:scale-95 flex items-center gap-2"
+                            :disabled="testing">
+                        <span class="material-symbols-rounded text-sm" :class="testing ? 'animate-spin' : ''" x-text="testing ? 'sync' : 'vitals_check'"></span>
+                        <span x-text="testing ? 'Testing...' : 'Test Default Provider'"></span>
+                    </button>
+                    <template x-if="result">
+                        <div class="mt-4 p-4 rounded-2xl text-xs font-medium border animate-slide-up"
+                             :class="result.success ? 'bg-success-50 text-success-700 border-success-100' : 'bg-danger-50 text-danger-700 border-danger-100'">
+                            <p x-text="result.message"></p>
+                        </div>
+                    </template>
+                </div>
+                <x-primary-button class="btn-pill px-12 py-3 shadow-xl shadow-primary-500/20">
+                    {{ __('Apply Global Changes') }}
                 </x-primary-button>
             </div>
         </form>

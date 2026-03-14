@@ -148,6 +148,10 @@
                         <span class="material-symbols-rounded">smart_toy</span>
                         <span class="text-sm font-medium">AI Control</span>
                     </a>
+                    <a href="{{ route('admin.businesses.index') }}" class="flex items-center gap-4 px-6 py-3 {{ request()->routeIs('admin.businesses.*') ? 'nav-item-active' : 'text-neutral-700 hover:bg-neutral-100' }}">
+                        <span class="material-symbols-rounded">business_center</span>
+                        <span class="text-sm font-medium">Businesses</span>
+                    </a>
                     <div class="h-px bg-neutral-200 my-4 mx-4"></div>
                     @endif
 

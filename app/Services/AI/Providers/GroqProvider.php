@@ -20,14 +20,28 @@ class GroqProvider implements AIProviderInterface
     {
         // Mocking for now if API key is not set
         if (empty($this->apiKey)) {
+            $cat = $promptData['category'] ?? 'service';
+            $biz = $promptData['business_name'] ?? 'this place';
+            $desc = $promptData['business_description'] ?? '';
+            $keywords = $promptData['target_keywords'] ?? '';
+
+            if ($desc) {
+                return [
+                    "I had an amazing experience at $biz. $desc The keywords that come to mind are $keywords.",
+                    "Truly impressed with $biz. Their focus on $keywords really shows. $desc",
+                    "Best $cat experience! $desc Highly recommended for their professional approach."
+                ];
+            }
+
             return [
-                "The food here was amazing! The " . ($promptData['category'] ?? 'service') . " was top notch. Highly recommend.",
-                "Great experience at " . ($promptData['business_name'] ?? 'this place') . ". Will definitely come back again.",
+                "The $cat at $biz was absolutely top notch! Highly recommend.",
+                "Great experience! Will definitely come back again soon. $biz is excellent.",
                 "Loved the vibe and the quality of everything. A solid 5 stars!"
             ];
         }
 
-        // Implementation of Groq API call would go here
+        // Real implementation would be:
+        // $response = Http::withToken($this->apiKey)->post('https://api.groq.com/...', [...]);
         return [];
     }
 

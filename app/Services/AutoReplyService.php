@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\GoogleReview;
+use App\Models\PlatformSetting;
 use App\Services\AI\AIProviderFactory;
 use Illuminate\Support\Facades\Log;
 
@@ -13,9 +14,28 @@ class AutoReplyService
         $business = $review->business;
         $branch = $review->branch;
 
-        $providerName = $business->ai_provider ?? config('services.ai.default_provider', 'groq');
-        $model = $business->ai_model ?? config('services.ai.default_model', 'llama-3.1-70b-versatile');
-        $apiKey = $business->ai_api_key_encrypted ?? config('services.ai.api_key');
+        // Resolve Global Settings as fallbacks
+        $globalSettings = PlatformSetting::whereIn('key', [
+            'ai_default_provider',
+            'ai_default_model',
+            'openai_api_key',
+            'gemini_api_key',
+            'groq_api_key'
+        ])->get()->pluck('value', 'key');
+
+        $providerName = $business->ai_provider ?? $globalSettings['ai_default_provider'] ?? 'groq';
+        $model = $business->ai_model ?? $globalSettings['ai_default_model'] ?? 'llama-3.1-70b-versatile';
+
+        // Resolve API key based on provider
+        $apiKey = $business->ai_api_key_encrypted;
+        if (!$apiKey) {
+            $apiKey = match($providerName) {
+                'openai' => $globalSettings['openai_api_key'] ?? null,
+                'gemini' => $globalSettings['gemini_api_key'] ?? null,
+                'groq'   => $globalSettings['groq_api_key'] ?? null,
+                default  => null
+            };
+        }
 
         $provider = AIProviderFactory::make($providerName, $model, $apiKey ?: '');
 

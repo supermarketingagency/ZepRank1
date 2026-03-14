@@ -25,12 +25,15 @@ class Branch extends Model
         'google_review_count',
         'google_rating',
         'last_google_sync',
+        'business_description',
+        'target_keywords',
     ];
 
     protected $casts = [
         'review_link_active' => 'boolean',
         'ai_api_key_encrypted' => 'encrypted',
         'last_google_sync' => 'datetime',
+        'target_keywords' => 'json',
     ];
 
     protected static function booted(): void

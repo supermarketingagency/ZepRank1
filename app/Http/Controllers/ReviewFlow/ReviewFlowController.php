@@ -47,7 +47,7 @@ class ReviewFlowController extends Controller
         // Simple Routing: Go straight to drafts/feedback
         if ($session->route === 'google') {
             // Generate drafts immediately to keep it simple for the user (no MCQ screen for MVP)
-            $aiService = new AIReviewService();
+            $aiService = app(AIReviewService::class);
             $aiService->generateReviewDrafts($session);
 
             return redirect()->route('review.drafts', ['slug' => $slug, 'token' => $session->session_token]);

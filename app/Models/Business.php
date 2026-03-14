@@ -36,6 +36,11 @@ class Business extends Model
         'ai_api_key_encrypted' => 'encrypted',
     ];
 
+    protected static function booted(): void
+    {
+        static::addGlobalScope(new BusinessScope());
+    }
+
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_user_id');

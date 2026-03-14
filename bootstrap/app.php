@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \App\Http\Middleware\CheckRole::class,
         ]);
         $middleware->append(\App\Http\Middleware\DetectReseller::class);
+        $middleware->appendToGroup('web', \App\Http\Middleware\RedirectIfInstalled::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
