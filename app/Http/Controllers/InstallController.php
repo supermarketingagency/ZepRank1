@@ -12,6 +12,22 @@ class InstallController extends Controller
 {
     public function index()
     {
+        // Ensure required storage directories exist
+        $dirs = [
+            storage_path('framework/sessions'),
+            storage_path('framework/views'),
+            storage_path('framework/cache'),
+            storage_path('app/public'),
+            storage_path('logs'),
+            base_path('bootstrap/cache'),
+        ];
+
+        foreach ($dirs as $dir) {
+            if (!File::exists($dir)) {
+                @mkdir($dir, 0775, true);
+            }
+        }
+
         $checks = [
             'PHP Version (>= 8.2.0)' => version_compare(PHP_VERSION, '8.2.0', '>='),
             'PDO Extension' => extension_loaded('pdo_mysql') || extension_loaded('pdo_sqlite'),
@@ -24,6 +40,7 @@ class InstallController extends Controller
             'Tokenizer Extension' => extension_loaded('tokenizer'),
             'CURL Extension' => extension_loaded('curl'),
             'Storage Writable' => is_writable(storage_path()),
+            'Framework Sessions Writable' => is_writable(storage_path('framework/sessions')),
             'Bootstrap Cache Writable' => is_writable(base_path('bootstrap/cache')),
             '.env Writable' => is_writable(base_path()) || (File::exists(base_path('.env')) && is_writable(base_path('.env'))),
         ];

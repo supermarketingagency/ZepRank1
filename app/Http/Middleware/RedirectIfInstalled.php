@@ -19,12 +19,17 @@ class RedirectIfInstalled
             return $next($request);
         }
 
+        // Fix for subfolder installation: bypass if accessing public/
+        if (str_contains($request->getRequestUri(), '/public/')) {
+            return $next($request);
+        }
+
         $isInstalled = File::exists(storage_path('installed'));
         $isInstallPath = $request->is('install') || $request->is('install/*');
 
         // If not installed and not on install page, redirect to install
         if (!$isInstalled && !$isInstallPath) {
-            return redirect()->route('install.index');
+            return redirect('/install');
         }
 
         // If installed and trying to access install page, redirect to dashboard
