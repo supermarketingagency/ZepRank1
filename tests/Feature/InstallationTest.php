@@ -27,7 +27,7 @@ class InstallationTest extends TestCase
         $response = $this->withHeader('X-Testing-Installation', '1')->get('/install');
         $response->assertStatus(200);
         $response->assertSee('Environment Checks');
-        $response->assertSee('php');
+        $response->assertSee('PHP Version');
     }
 
     public function test_can_navigate_to_database_setup()

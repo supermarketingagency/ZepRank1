@@ -108,15 +108,15 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                                 <div class="space-y-1.5">
                                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Host</label>
-                                    <input type="text" name="db_host" value="localhost" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm focus:border-blue-500 outline-none">
+                                    <input type="text" name="db_host" value="{{ $env['DB_HOST'] ?? 'localhost' }}" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm focus:border-blue-500 outline-none">
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Database Name</label>
-                                    <input type="text" name="db_name" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm focus:border-blue-500 outline-none">
+                                    <input type="text" name="db_name" value="{{ $env['DB_DATABASE'] ?? '' }}" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm focus:border-blue-500 outline-none">
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Username</label>
-                                    <input type="text" name="db_user" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm focus:border-blue-500 outline-none">
+                                    <input type="text" name="db_user" value="{{ $env['DB_USERNAME'] ?? '' }}" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm focus:border-blue-500 outline-none">
                                 </div>
                                 <div class="space-y-1.5">
                                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Password</label>
@@ -131,7 +131,10 @@
                                     <span class="material-symbols-rounded text-lg" :class="testing ? 'animate-spin' : ''">refresh</span>
                                     <span x-text="testing ? 'Testing...' : 'Test Connection'"></span>
                                 </button>
-                                <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-all">Save & Continue</button>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <a href="{{ route('install.index', ['step' => 1]) }}" class="bg-slate-50 text-slate-500 py-4 rounded-2xl font-bold text-center border border-slate-100 active:scale-[0.98] transition-all">Previous</a>
+                                    <button type="submit" class="bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-all">Continue</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -149,19 +152,20 @@
                             @csrf
                             <div class="space-y-1.5">
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">App Name</label>
-                                <input type="text" name="app_name" value="ZEPRANK" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm focus:border-blue-500 outline-none">
+                                <input type="text" name="app_name" value="{{ $env['APP_NAME'] ?? 'ZEPRANK' }}" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm focus:border-blue-500 outline-none">
                             </div>
                             <div class="space-y-1.5">
                                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">App URL</label>
-                                <input type="url" name="app_url" value="{{ url('/') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm focus:border-blue-500 outline-none">
+                                <input type="url" name="app_url" value="{{ $env['APP_URL'] ?? url('/') }}" required class="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-5 text-sm focus:border-blue-500 outline-none">
                             </div>
                             <div class="flex items-center gap-3 p-4 bg-blue-50 rounded-2xl border border-blue-100">
                                 <input type="checkbox" name="generate_key" checked id="gen_key" class="w-5 h-5 rounded-lg border-blue-200 text-blue-600 focus:ring-blue-500">
                                 <label for="gen_key" class="text-xs font-bold text-blue-800">Auto-generate secure App Key</label>
                             </div>
 
-                            <div class="pt-4">
-                                <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-all">Continue to Finalization</button>
+                            <div class="pt-4 grid grid-cols-2 gap-3">
+                                <a href="{{ route('install.index', ['step' => 2]) }}" class="bg-slate-50 text-slate-500 py-4 rounded-2xl font-bold text-center border border-slate-100 active:scale-[0.98] transition-all">Previous</a>
+                                <button type="submit" class="bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-600/20 active:scale-[0.98] transition-all">Continue</button>
                             </div>
                         </form>
                     </div>

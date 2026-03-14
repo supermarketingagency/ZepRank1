@@ -13,17 +13,34 @@ class InstallController extends Controller
     public function index()
     {
         $checks = [
-            'php' => version_compare(PHP_VERSION, '8.2.0', '>='),
-            'pdo' => extension_loaded('pdo_mysql') || extension_loaded('pdo_sqlite'),
-            'openssl' => extension_loaded('openssl'),
-            'mbstring' => extension_loaded('mbstring'),
-            'storage' => is_writable(storage_path()),
-            'cache' => is_writable(base_path('bootstrap/cache')),
-            'env' => is_writable(base_path()) || (File::exists(base_path('.env')) && is_writable(base_path('.env'))),
+            'PHP Version (>= 8.2.0)' => version_compare(PHP_VERSION, '8.2.0', '>='),
+            'PDO Extension' => extension_loaded('pdo_mysql') || extension_loaded('pdo_sqlite'),
+            'OpenSSL Extension' => extension_loaded('openssl'),
+            'Mbstring Extension' => extension_loaded('mbstring'),
+            'BCMath Extension' => extension_loaded('bcmath'),
+            'XML Extension' => extension_loaded('xml'),
+            'Ctype Extension' => extension_loaded('ctype'),
+            'JSON Extension' => extension_loaded('json'),
+            'Tokenizer Extension' => extension_loaded('tokenizer'),
+            'CURL Extension' => extension_loaded('curl'),
+            'Storage Writable' => is_writable(storage_path()),
+            'Bootstrap Cache Writable' => is_writable(base_path('bootstrap/cache')),
+            '.env Writable' => is_writable(base_path()) || (File::exists(base_path('.env')) && is_writable(base_path('.env'))),
         ];
 
+        $env = [];
+        if (File::exists(base_path('.env'))) {
+            $lines = file(base_path('.env'), FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            foreach ($lines as $line) {
+                if (str_contains($line, '=')) {
+                    [$key, $value] = explode('=', $line, 2);
+                    $env[trim($key)] = trim($value, '"\' ');
+                }
+            }
+        }
+
         $step = 1;
-        return view('install', compact('checks', 'step'));
+        return view('install', compact('checks', 'step', 'env'));
     }
 
     public function testConnection(Request $request)
@@ -104,6 +121,13 @@ class InstallController extends Controller
 
             // Try to link storage
             try {
+                if (File::exists(public_path('storage'))) {
+                    if (is_link(public_path('storage'))) {
+                        File::delete(public_path('storage'));
+                    } else {
+                        File::deleteDirectory(public_path('storage'));
+                    }
+                }
                 Artisan::call('storage:link');
             } catch (\Exception $e) {
                 Log::warning('Storage link failed during installation: ' . $e->getMessage());
