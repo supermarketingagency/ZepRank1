@@ -13,26 +13,29 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $business = Auth::user()->currentBusiness;
+        $business = Auth::user()->currentBusiness()->with('branches')->first();
+
         if (!$business) {
             return redirect()->route('onboarding');
         }
 
+        $branchIds = $business->branches->pluck('id');
+
         $stats = [
-            'total_reviews' => ReviewSession::whereIn('branch_id', $business->branches->pluck('id'))
+            'total_reviews' => ReviewSession::whereIn('branch_id', $branchIds)
                 ->where('google_redirect_completed', true)
                 ->count(),
-            'avg_rating' => ReviewSession::whereIn('branch_id', $business->branches->pluck('id'))
+            'avg_rating' => ReviewSession::whereIn('branch_id', $branchIds)
                 ->where('google_redirect_completed', true)
                 ->avg('star_rating') ?? 0,
-            'qr_scans' => ReviewSession::whereIn('branch_id', $business->branches->pluck('id'))
+            'qr_scans' => ReviewSession::whereIn('branch_id', $branchIds)
                 ->where('touchpoint_type', 'qr')
                 ->count(),
-            'private_feedbacks' => PrivateFeedback::whereIn('branch_id', $business->branches->pluck('id'))
+            'private_feedbacks' => PrivateFeedback::whereIn('branch_id', $branchIds)
                 ->count(),
         ];
 
-        $recentActivity = ReviewSession::whereIn('branch_id', $business->branches->pluck('id'))
+        $recentActivity = ReviewSession::whereIn('branch_id', $branchIds)
             ->with('branch')
             ->latest()
             ->take(10)

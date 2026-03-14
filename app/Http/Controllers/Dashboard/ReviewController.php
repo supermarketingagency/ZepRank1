@@ -12,7 +12,7 @@ class ReviewController extends Controller
 {
     public function index(AutoReplyService $replyService)
     {
-        $business = Auth::user()->currentBusiness;
+        $business = Auth::user()->currentBusiness()->with('branches')->first();
         $reviews = ReviewSession::whereIn('branch_id', $business->branches->pluck('id'))
             ->whereNotNull('star_rating')
             ->with(['branch', 'business'])

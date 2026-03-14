@@ -12,6 +12,7 @@ class SocialSchedulerController extends Controller
     public function index()
     {
         $scheduledPosts = BrandedPoster::whereIn('status', ['scheduled', 'posted'])
+            ->with(['branch', 'festival'])
             ->orderBy('scheduled_at', 'desc')
             ->get();
 
