@@ -17,6 +17,11 @@ class DetectReseller
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Skip if app is not installed yet to avoid DB errors
+        if (!\Illuminate\Support\Facades\File::exists(storage_path('installed'))) {
+            return $next($request);
+        }
+
         $host = $request->getHost();
         $reseller = Reseller::where('custom_domain', $host)->first();
 

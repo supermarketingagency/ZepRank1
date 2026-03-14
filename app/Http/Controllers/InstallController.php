@@ -19,6 +19,7 @@ class InstallController extends Controller
             'mbstring' => extension_loaded('mbstring'),
             'storage' => is_writable(storage_path()),
             'cache' => is_writable(base_path('bootstrap/cache')),
+            'env' => is_writable(base_path()) || (File::exists(base_path('.env')) && is_writable(base_path('.env'))),
         ];
 
         $step = 1;
@@ -92,12 +93,27 @@ class InstallController extends Controller
     public function finalize()
     {
         try {
+            // Ensure we are using the new DB config from .env
+            Artisan::call('config:clear');
+
             // Run migrations and seeds
             Artisan::call('migrate:fresh', ['--force' => true]);
+
+            // Seed essential data only
             Artisan::call('db:seed', ['--force' => true]);
+
+            // Try to link storage
+            try {
+                Artisan::call('storage:link');
+            } catch (\Exception $e) {
+                Log::warning('Storage link failed during installation: ' . $e->getMessage());
+            }
 
             // Mark as installed
             File::put(storage_path('installed'), now()->toDateTimeString());
+
+            // Final cache clear to ensure middleware kicks in
+            Artisan::call('config:clear');
 
             return redirect()->route('dashboard')->with('success', 'Installation completed successfully!');
         } catch (\Exception $e) {
