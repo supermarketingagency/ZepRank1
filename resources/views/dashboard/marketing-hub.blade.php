@@ -133,12 +133,59 @@
             </div>
 
             <!-- Ad Performance Section (Placeholder) -->
-            <div class="card p-8 bg-white dark:bg-dark-surface border-neutral-200 dark:border-neutral-800">
-                <h4 class="font-google font-bold text-lg mb-8 dark:text-neutral-50">Active Campaigns</h4>
-                <div class="text-center py-16 text-neutral-400 dark:text-neutral-600 bg-neutral-50/50 dark:bg-neutral-900/20 rounded-3xl border border-dashed border-neutral-200 dark:border-neutral-800">
-                    <span class="material-symbols-rounded text-6xl mb-4">bar_chart</span>
-                    <p class="text-sm font-medium">No active campaigns found. Boost your foot traffic today!</p>
-                    <button @click="$dispatch('open-ads-wizard')" class="mt-6 text-primary-600 dark:text-primary-400 font-bold text-xs hover:underline">Launch Your First Ad</button>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+                <!-- WhatsApp & Email Requests -->
+                <div class="card p-8 bg-white dark:bg-dark-surface border-neutral-200 dark:border-neutral-800 shadow-m3-1">
+                    <div class="flex items-center justify-between mb-8">
+                        <h4 class="font-google font-bold text-lg dark:text-neutral-50">Direct Review Requests</h4>
+                        <div class="flex gap-2">
+                            <span class="material-symbols-rounded text-primary-600">contact_mail</span>
+                        </div>
+                    </div>
+
+                    <div x-data="{ type: 'whatsapp' }" class="space-y-6">
+                        <div class="flex p-1 bg-neutral-100 dark:bg-neutral-900 rounded-xl">
+                            <button @click="type = 'whatsapp'" :class="type === 'whatsapp' ? 'bg-white dark:bg-neutral-800 shadow-sm text-primary-600' : 'text-neutral-500'" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all">WhatsApp</button>
+                            <button @click="type = 'email'" :class="type === 'email' ? 'bg-white dark:bg-neutral-800 shadow-sm text-primary-600' : 'text-neutral-500'" class="flex-1 py-2 text-xs font-bold rounded-lg transition-all">Email</button>
+                        </div>
+
+                        <form action="{{ route('dashboard.marketing.send') }}" method="POST" class="space-y-4">
+                            @csrf
+                            <input type="hidden" name="type" :value="type">
+                            <input type="hidden" name="branch_id" value="{{ $branch->id }}">
+
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black text-neutral-400 uppercase tracking-widest" x-text="type === 'whatsapp' ? 'Phone Number' : 'Email Address'"></label>
+                                <input :type="type === 'whatsapp' ? 'tel' : 'email'" name="recipient" required :placeholder="type === 'whatsapp' ? '+91 98765 43210' : 'customer@example.com'" class="w-full bg-neutral-50 dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 rounded-xl py-3 px-4 text-sm focus:border-primary-500">
+                            </div>
+
+                            <button type="submit" class="w-full bg-primary-600 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-primary-500/20 active:scale-95 transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-rounded text-lg" x-text="type === 'whatsapp' ? 'send' : 'mail'"></span>
+                                Send <span x-text="type === 'whatsapp' ? 'WhatsApp' : 'Email'"></span> Request
+                            </button>
+                        </form>
+
+                        <div class="pt-6 border-t border-neutral-100 dark:border-neutral-800">
+                            <h5 class="text-[10px] font-black text-neutral-400 uppercase tracking-widest mb-4 text-center">Bulk Campaign</h5>
+                            <form action="{{ route('dashboard.marketing.bulk') }}" method="POST" class="space-y-4">
+                                @csrf
+                                <input type="hidden" name="type" :value="type">
+                                <input type="hidden" name="branch_id" value="{{ $branch->id }}">
+                                <textarea name="recipients" required :placeholder="type === 'whatsapp' ? '9876543210, 9876543211...' : 'user1@email.com, user2@email.com...'" class="w-full bg-neutral-50 dark:bg-neutral-900 border-neutral-200 dark:border-neutral-800 rounded-xl h-24 p-4 text-xs focus:border-primary-500"></textarea>
+                                <button type="submit" class="w-full border-2 border-primary-600 text-primary-600 py-3 rounded-xl font-bold text-sm hover:bg-primary-50 dark:hover:bg-primary-900/10 active:scale-95 transition-all">Launch Bulk Campaign</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ad Performance Section -->
+                <div class="card p-8 bg-white dark:bg-dark-surface border-neutral-200 dark:border-neutral-800 shadow-m3-1">
+                    <h4 class="font-google font-bold text-lg mb-8 dark:text-neutral-50">Active Campaigns</h4>
+                    <div class="text-center py-16 text-neutral-400 dark:text-neutral-600 bg-neutral-50/50 dark:bg-neutral-900/20 rounded-3xl border border-dashed border-neutral-200 dark:border-neutral-800">
+                        <span class="material-symbols-rounded text-6xl mb-4">bar_chart</span>
+                        <p class="text-sm font-medium">No active campaigns found. Boost your foot traffic today!</p>
+                        <button @click="$dispatch('open-ads-wizard')" class="mt-6 text-primary-600 dark:text-primary-400 font-bold text-xs hover:underline">Launch Your First Ad</button>
+                    </div>
                 </div>
             </div>
         </div>

@@ -55,6 +55,8 @@ Route::middleware(['auth', 'role:business_owner'])->group(function () {
     // Marketing & Ads
     Route::get('/marketing', [\App\Http\Controllers\Dashboard\MarketingHubController::class, 'index'])->name('dashboard.marketing');
     Route::post('/marketing/ads', [\App\Http\Controllers\Dashboard\MarketingHubController::class, 'launchAds'])->name('dashboard.marketing.ads');
+    Route::post('/marketing/send-request', [\App\Http\Controllers\Dashboard\MarketingHubController::class, 'sendRequest'])->name('dashboard.marketing.send');
+    Route::post('/marketing/bulk-request', [\App\Http\Controllers\Dashboard\MarketingHubController::class, 'bulkRequest'])->name('dashboard.marketing.bulk');
 
     // Creative Hub (Auto-Poster)
     Route::get('/creative-hub', [\App\Http\Controllers\Dashboard\CreativeHubController::class, 'index'])->name('dashboard.creative');

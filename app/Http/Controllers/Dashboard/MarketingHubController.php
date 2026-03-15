@@ -40,4 +40,52 @@ class MarketingHubController extends Controller
 
         return redirect()->back()->with('error', 'Failed to launch campaign.');
     }
+
+    public function sendRequest(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|in:whatsapp,email',
+            'recipient' => 'required|string',
+            'branch_id' => 'required|exists:branches,id'
+        ]);
+
+        $branch = \App\Models\Branch::findOrFail($request->branch_id);
+        $business = Auth::user()->currentBusiness;
+
+        \App\Jobs\SendReviewRequestJob::dispatch([
+            'type' => $request->type,
+            'recipient' => $request->recipient,
+            'business_name' => $business->name,
+            'review_url' => route('review.start', $branch->slug)
+        ]);
+
+        return redirect()->back()->with('success', ucfirst($request->type) . ' review request queued!');
+    }
+
+    public function bulkRequest(Request $request)
+    {
+        $request->validate([
+            'type' => 'required|in:whatsapp,email',
+            'recipients' => 'required|string', // comma separated
+            'branch_id' => 'required|exists:branches,id'
+        ]);
+
+        $branch = \App\Models\Branch::findOrFail($request->branch_id);
+        $business = Auth::user()->currentBusiness;
+        $recipients = explode(',', $request->recipients);
+
+        foreach ($recipients as $recipient) {
+            $recipient = trim($recipient);
+            if (empty($recipient)) continue;
+
+            \App\Jobs\SendReviewRequestJob::dispatch([
+                'type' => $request->type,
+                'recipient' => $recipient,
+                'business_name' => $business->name,
+                'review_url' => route('review.start', $branch->slug)
+            ]);
+        }
+
+        return redirect()->back()->with('success', count($recipients) . ' bulk requests queued!');
+    }
 }

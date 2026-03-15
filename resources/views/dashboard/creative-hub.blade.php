@@ -61,10 +61,9 @@
                     @forelse($generatedPosters as $poster)
                     <div class="card overflow-hidden bg-white dark:bg-dark-surface border-neutral-200 dark:border-neutral-800 group transition-all hover:shadow-m3-3">
                         <div class="aspect-square bg-neutral-100 dark:bg-neutral-900 relative overflow-hidden">
-                            <!-- Placeholder for generated image -->
-                            <div class="absolute inset-0 flex items-center justify-center text-neutral-300 dark:text-neutral-700">
-                                <span class="material-symbols-rounded text-6xl group-hover:scale-110 transition-transform duration-500">auto_awesome</span>
-                            </div>
+                            <!-- Generated AI Image -->
+                            <img src="{{ asset('storage/' . $poster->image_path) }}" class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
+
                             <div class="absolute inset-0 bg-neutral-900/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col items-center justify-center gap-4">
                                 <button class="bg-white text-neutral-900 w-12 h-12 rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
                                     <span class="material-symbols-rounded">visibility</span>
